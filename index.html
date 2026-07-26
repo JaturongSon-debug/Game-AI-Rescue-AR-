@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PEA Electrical Rescue AR - เกมกู้ภัยและช่วยชีวิตจากอุบัติเหตุไฟฟ้า (10 ด่าน)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="app-container">
+    <video id="webcam-video" playsinline></video>
+    <canvas id="game-canvas"></canvas>
+
+    <div id="ui-layer">
+      <header class="interactive">
+        <div class="brand">
+          <div class="pea-badge">PEA</div>
+          <div class="title-text">Electrical Rescue AR</div>
+        </div>
+
+        <div class="controls">
+          <button id="btn-sound-toggle" class="btn-icon" title="เปิด/ปิด เสียง">🔊</button>
+          <button id="btn-pause" class="btn-icon" title="พักเกม">⏸️</button>
+          <button id="btn-camera-toggle" class="btn-icon" style="width: auto; padding: 0 16px; border-radius: 20px; font-size: 0.9rem;" title="ปิด/เปิด กล้อง">🚫 ปิดกล้อง</button>
+        </div>
+      </header>
+
+      <div id="level-banner">
+        <div id="level-title">ด่านที่ 1: ตรวจเช็กและสวมอุปกรณ์ PPE (Safety Gear)</div>
+        <div id="level-desc">สวมถุงมือยางฉนวนไฟฟ้าและรองเท้าเซฟตี้ฉนวนไฟฟ้าก่อนเข้าช่วยเหลือ</div>
+      </div>
+
+      <footer class="interactive">
+        <div class="status-card">
+          <div id="hand-dot" class="hand-indicator"></div>
+          <span id="hand-text">กำลังโหลด AI ตรวจจับมือ...</span>
+        </div>
+        <div class="status-card">
+          <span id="score-text" style="color: #ffd600; font-weight: bold;">คะแนนสะสม: 0</span>
+        </div>
+      </footer>
+    </div>
+
+    <div id="privacy-modal" class="modal-overlay">
+      <div class="modal-card">
+        <h2>⚡ PEA Electrical Rescue AR (10 ด่าน) ⚡</h2>
+        <p>ยินดีต้อนรับสู่เกมกู้ภัยและช่วยชีวิตจากอุบัติเหตุทางไฟฟ้า การไฟฟ้าส่วนภูมิภาค (PEA)</p>
+
+        <div class="privacy-badge">
+          <span>🔒</span>
+          <span>ความเป็นส่วนตัวสูงสุด: การประมวลผลกล้องทำในเครื่องของคุณเท่านั้น ไม่มีการบันทึกภาพ</span>
+        </div>
+
+        <div class="instruction-box pulse">
+          "เกมใช้กล้องเพื่อตรวจจับตำแหน่งมือเท่านั้น ภาพจะประมวลผลอยู่ภายในอุปกรณ์ ไม่มีการบันทึกและไม่มีการส่งภาพออกจากเครื่อง"
+        </div>
+
+        <div style="margin: 16px 0 24px 0; padding: 12px; background: rgba(106, 27, 154, 0.4); border-radius: 12px; border: 1px solid rgba(255, 214, 0, 0.4); font-size: 0.85rem; color: #ffd600; line-height: 1.5;">
+          <strong>Credit :</strong> By Mr.Jaturong Songapkde Senior Technician (Level 7) Generation System Section, Substation Maintenance Division ,PEA N2
+        </div>
+
+        <button id="btn-start-cam" class="btn-primary">
+          <span>📷</span> อนุญาตเปิดกล้องเล่น AR
+        </button>
+
+        <button id="btn-fallback-mouse" class="btn-secondary">
+          <span>🖱️</span> เล่นด้วยเมาส์ / หน้าจอสัมผัส
+        </button>
+      </div>
+    </div>
+
+    <div id="win-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <h2 style="color: #00e676;">🎉 ภารกิจสำเร็จ! 🎉</h2>
+        <div id="win-stars" style="font-size: 2.5rem; margin: 10px 0;">⭐⭐⭐</div>
+        <p id="win-message">คุณปฏิบัติตามขั้นตอนความปลอดภัยของ PEA ได้อย่างถูกต้อง!</p>
+
+        <button id="btn-next-level" class="btn-primary">
+          <span>▶️</span> ด่านต่อไป
+        </button>
+
+        <button id="btn-restart" class="btn-secondary">
+          <span>🔄</span> เริ่มใหม่ตั้งแต่ต้น
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="sound.js"></script>
+  <script src="hand-tracking.js"></script>
+  <script src="levels.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
