@@ -314,6 +314,37 @@ class LevelManager {
         }
       }
     } else if (this.currentLevel === 8) {
+      const phoneW = Math.min(w * 0.75, Math.max(260, Math.min(w * 0.38, 320)));
+      const phoneH = Math.min(h * 0.65, 520);
+      const phoneX = (w - phoneW) / 2;
+      const phoneY = Math.max(h * 0.22, 130);
+
+      const screenX = phoneX + 8;
+      const screenY = phoneY + 32;
+      const screenW = phoneW - 16;
+      const screenH = phoneH - 42;
+
+      const keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "C", "0", "Call"];
+      const startY = screenY + 115;
+      const rowGap = (screenH - 130) / 4;
+      const colGap = screenW / 3;
+      const btnRadius = Math.min(24, Math.min(colGap, rowGap) * 0.38);
+
+      const now = Date.now();
+      if (isPinch && (!this.state.l8.lastPressTime || now - this.state.l8.lastPressTime > 300)) {
+        keys.forEach((k, idx) => {
+          const row = Math.floor(idx / 3);
+          const col = idx % 3;
+          const kx = screenX + colGap * (col + 0.5);
+          const ky = startY + rowGap * (row + 0.4);
+
+          if (Math.hypot(cx - kx, cy - ky) < btnRadius + 12) {
+            this.state.l8.lastPressTime = now;
+            this.pressKeypad(k);
+          }
+        });
+      }
+
       if (this.state.l8.phoneDialed === "1129" && !this.state.l8.isDialed) {
         this.state.l8.isDialed = true;
         this.playerEquipped.hotlineDialed = true;
@@ -364,7 +395,13 @@ class LevelManager {
   }
 
   pressKeypad(num) {
-    if (this.currentLevel === 8 && this.state.l8.phoneDialed.length < 4) {
+    if (this.currentLevel !== 8) return;
+    if (num === "C") {
+      this.state.l8.phoneDialed = "";
+      soundManager.playClick();
+    } else if (num === "Call") {
+      soundManager.playClick();
+    } else if (this.state.l8.phoneDialed.length < 4 && !isNaN(num)) {
       this.state.l8.phoneDialed += num;
       soundManager.playClick();
     }
@@ -677,11 +714,15 @@ class LevelManager {
 
   renderL8(ctx, w, h) {
     const s = this.state.l8;
-    const phoneX = w * 0.36;
-    const phoneY = h * 0.16;
-    const phoneW = w * 0.28;
-    const phoneH = h * 0.72;
+    const isMobile = w < 768;
+    
+    // Scale and position phone to fit below header and stay clear of top banner
+    const phoneW = Math.min(w * 0.75, Math.max(260, Math.min(w * 0.38, 320)));
+    const phoneH = Math.min(h * 0.65, 520);
+    const phoneX = (w - phoneW) / 2;
+    const phoneY = Math.max(h * 0.22, 130);
 
+    // Phone Body
     ctx.fillStyle = "#1c1c1e";
     ctx.beginPath();
     ctx.roundRect(phoneX, phoneY, phoneW, phoneH, 32);
@@ -690,36 +731,53 @@ class LevelManager {
     ctx.lineWidth = 3;
     ctx.stroke();
 
+    // Notch
     ctx.fillStyle = "#000000";
     ctx.beginPath();
-    ctx.roundRect(w * 0.5 - 40, phoneY + 12, 80, 20, 10);
+    ctx.roundRect(w * 0.5 - 35, phoneY + 10, 70, 16, 8);
     ctx.fill();
 
+    // Screen area
+    const screenX = phoneX + 8;
+    const screenY = phoneY + 32;
+    const screenW = phoneW - 16;
+    const screenH = phoneH - 42;
     ctx.fillStyle = "#0f0c1b";
     ctx.beginPath();
-    ctx.roundRect(phoneX + 8, phoneY + 38, phoneW - 16, phoneH - 58, 20);
+    ctx.roundRect(screenX, screenY, screenW, screenH, 20);
     ctx.fill();
 
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 26px Kanit";
+    // Screen Title & Displayed Number
+    ctx.fillStyle = "#ffd600";
+    ctx.font = "bold 16px Kanit";
     ctx.textAlign = "center";
-    ctx.fillText(s.phoneDialed || "กด 1129", w * 0.5, phoneY + 90);
+    ctx.fillText("กดเบอร์โทร 1129", w * 0.5, screenY + 28);
 
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 32px Kanit";
+    ctx.fillText(s.phoneDialed || "_ _ _ _", w * 0.5, screenY + 70);
+
+    // Keypad layout setup
     const keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "C", "0", "Call"];
+    const startY = screenY + 115;
+    const rowGap = (screenH - 130) / 4;
+    const colGap = screenW / 3;
+    const btnRadius = Math.min(24, Math.min(colGap, rowGap) * 0.38);
+
     keys.forEach((k, idx) => {
       const row = Math.floor(idx / 3);
       const col = idx % 3;
-      const kx = w * 0.41 + col * (w * 0.075);
-      const ky = phoneY + 145 + row * (h * 0.11);
+      const kx = screenX + colGap * (col + 0.5);
+      const ky = startY + rowGap * (row + 0.4);
 
-      ctx.fillStyle = k === "Call" ? "#34c759" : "#3a3a3c";
+      ctx.fillStyle = k === "Call" ? "#34c759" : (k === "C" ? "#ff3d00" : "#3a3a3c");
       ctx.beginPath();
-      ctx.arc(kx, ky, 22, 0, Math.PI * 2);
+      ctx.arc(kx, ky, btnRadius, 0, Math.PI * 2);
       ctx.fill();
 
       ctx.fillStyle = "#ffffff";
-      ctx.font = "bold 16px Kanit";
-      ctx.fillText(k, kx, ky + 5);
+      ctx.font = `bold ${btnRadius * 0.85}px Kanit`;
+      ctx.fillText(k, kx, ky + btnRadius * 0.32);
     });
   }
 

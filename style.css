@@ -171,6 +171,23 @@ header {
   margin-top: 1px;
 }
 
+@media (max-width: 600px) {
+  #ui-layer {
+    padding: 6px 10px;
+  }
+  #level-banner {
+    padding: 4px 10px;
+    width: 96%;
+    border-radius: 12px;
+  }
+  #level-title {
+    font-size: 0.92rem;
+  }
+  #level-desc {
+    font-size: 0.75rem;
+  }
+}
+
 footer {
   display: flex;
   justify-content: space-between;
