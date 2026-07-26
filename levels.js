@@ -1,5 +1,5 @@
 /**
- * levels.js - Background 'images (1).jpg' and Cute Dino Costume Victim 'ตัวผู้ป่วย.jpg' Integration
+ * levels.js - Pure HD Canvas Room Art + Cutout Transparent Dino Victim ('victim_transparent.png')
  */
 
 class LevelManager {
@@ -12,13 +12,9 @@ class LevelManager {
 
     this.particles = [];
 
-    // Background Image Loader (images (1).jpg)
-    this.bgImage = new Image();
-    this.bgImage.src = 'images (1).jpg';
-
-    // Cute Dinosaur Victim Character Image Loader (ตัวผู้ป่วย.jpg)
+    // Transparent Dino Victim Character PNG ('victim_transparent.png')
     this.victimImage = new Image();
-    this.victimImage.src = 'ตัวผู้ป่วย.jpg';
+    this.victimImage.src = 'victim_transparent.png';
 
     // Player Equipment State
     this.playerEquipped = {
@@ -382,13 +378,8 @@ class LevelManager {
   }
 
   render(ctx, width, height, handTracker) {
-    // 1. Draw Custom New Living Room Background ('images (1).jpg')
-    if (this.bgImage.complete && this.bgImage.naturalWidth !== 0) {
-      ctx.drawImage(this.bgImage, 0, 0, width, height);
-    } else {
-      ctx.fillStyle = "#2e004f";
-      ctx.fillRect(0, 0, width, height);
-    }
+    // 1. Ultra Crisp Canvas Vector Background (Warm Cozy Living Room)
+    this.renderUltraHDRoom(ctx, width, height);
 
     // 2. Draw Nong Watt-D Avatar
     this.renderNongWattDAvatar(ctx, 90, height * 0.72);
@@ -410,6 +401,73 @@ class LevelManager {
 
     // 5. Draw AR Cursor
     this.renderCursor(ctx, handTracker);
+  }
+
+  // Ultra HD Crisp Canvas Vector Background (Cozy Home Living Room)
+  renderUltraHDRoom(ctx, w, h) {
+    // Wall Background Gradient (Warm Cream / Peach)
+    const wallGrad = ctx.createLinearGradient(0, 0, 0, h * 0.65);
+    wallGrad.addColorStop(0, "#fff5e6");
+    wallGrad.addColorStop(1, "#ffe8cc");
+    ctx.fillStyle = wallGrad;
+    ctx.fillRect(0, 0, w, h * 0.65);
+
+    // Floor (Warm Wood Flooring)
+    const floorGrad = ctx.createLinearGradient(0, h * 0.65, 0, h);
+    floorGrad.addColorStop(0, "#d7ccc8");
+    floorGrad.addColorStop(1, "#a1887f");
+    ctx.fillStyle = floorGrad;
+    ctx.fillRect(0, h * 0.65, w, h * 0.35);
+
+    // Wood Floor Planks
+    ctx.strokeStyle = "rgba(121, 85, 72, 0.3)";
+    ctx.lineWidth = 2;
+    for (let x = 0; x < w; x += 80) {
+      ctx.beginPath();
+      ctx.moveTo(x, h * 0.65); ctx.lineTo(x, h);
+      ctx.stroke();
+    }
+
+    // Skirting Board
+    ctx.fillStyle = "#8d6e63";
+    ctx.fillRect(0, h * 0.65 - 6, w, 8);
+
+    // Wall Clock on top left
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    ctx.arc(100, 75, 30, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#8d6e63";
+    ctx.lineWidth = 4;
+    ctx.stroke();
+    // Clock hands
+    ctx.strokeStyle = "#333";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(100, 75); ctx.lineTo(100, 55);
+    ctx.moveTo(100, 75); ctx.lineTo(115, 75);
+    ctx.stroke();
+
+    // Large Sunlight Window on top right
+    ctx.fillStyle = "#e0f7fa";
+    ctx.fillRect(w * 0.72, h * 0.08, 160, 110);
+    ctx.strokeStyle = "#ffb74d";
+    ctx.lineWidth = 8;
+    ctx.strokeRect(w * 0.72, h * 0.08, 160, 110);
+    // Window Panes
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(w * 0.72 + 80, h * 0.08); ctx.lineTo(w * 0.72 + 80, h * 0.08 + 110);
+    ctx.moveTo(w * 0.72, h * 0.08 + 55); ctx.lineTo(w * 0.72 + 160, h * 0.08 + 55);
+    ctx.stroke();
+
+    // Cute Plant Pot in Corner
+    ctx.fillStyle = "#81c784";
+    ctx.beginPath();
+    ctx.ellipse(w * 0.72 - 30, h * 0.65 - 40, 25, 40, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#a1887f";
+    ctx.fillRect(w * 0.72 - 45, h * 0.65 - 25, 30, 25);
   }
 
   // Nong Watt-D Avatar
@@ -579,7 +637,7 @@ class LevelManager {
       ctx.beginPath();
       ctx.arc(s.wireX, s.wireY, 35, 0, Math.PI * 2);
       ctx.stroke();
-      ctx.fillStyle = "#ffffff";
+      ctx.fillStyle = "#333333";
       ctx.font = "bold 14px Kanit";
       ctx.textAlign = "center";
       ctx.fillText(`ใช้ไม้แห้งแตะดันไฟ (${s.pushProgress}/3)`, s.wireX, s.wireY - 45);
@@ -673,7 +731,7 @@ class LevelManager {
       this.renderVirtualHandOverlay(ctx, w * 0.5, h * 0.42, "เชยคาง");
     }
 
-    ctx.fillStyle = "#fff";
+    ctx.fillStyle = "#333333";
     ctx.font = "bold 18px Kanit";
     ctx.textAlign = "center";
     ctx.fillText(`ตบไหล่เรียกผู้ป่วย: ${this.state.l9.shoulderTaps} / 3`, w * 0.5, h * 0.30);
@@ -692,7 +750,7 @@ class LevelManager {
 
     this.renderCPRInterlockedHands(ctx, w * 0.5, h * 0.58);
 
-    ctx.fillStyle = "#fff";
+    ctx.fillStyle = "#333333";
     ctx.font = "bold 22px Kanit";
     ctx.textAlign = "center";
     ctx.fillText(`ปั๊มหัวใจ (CPR): ${s.cprCount} / ${s.targetCPR}`, w * 0.5, h * 0.33);
@@ -727,9 +785,9 @@ class LevelManager {
     ctx.fillText("กด CPR", x, y + 4);
   }
 
-  // Draw Cute Dinosaur Costume Victim Character Image ('ตัวผู้ป่วย.jpg')
+  // Render Cutout Transparent Dino Victim Character ('victim_transparent.png')
   renderDinoVictimImage(ctx, x, y, isSparksActive) {
-    const size = 110;
+    const size = 120;
     if (this.victimImage.complete && this.victimImage.naturalWidth !== 0) {
       ctx.drawImage(this.victimImage, x - size / 2, y - size / 2 - 10, size, size);
     } else {
