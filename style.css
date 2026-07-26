@@ -11,8 +11,8 @@
   --white: #ffffff;
   --danger-red: #ff3d00;
   --success-green: #00e676;
-  --glass-bg: rgba(40, 10, 60, 0.75);
-  --glass-border: rgba(255, 214, 0, 0.3);
+  --glass-bg: rgba(40, 10, 60, 0.85);
+  --glass-border: rgba(255, 214, 0, 0.4);
   --font-family: 'Kanit', 'Sarabun', system-ui, -apple-system, sans-serif;
 }
 
@@ -43,12 +43,10 @@ body, html {
   background: radial-gradient(circle at center, #2e004f 0%, #110022 100%);
 }
 
-/* Hidden Camera Stream (Processed onto Canvas) */
 #webcam-video {
   display: none;
 }
 
-/* Main Game Canvas */
 #game-canvas {
   position: absolute;
   top: 0;
@@ -59,7 +57,6 @@ body, html {
   z-index: 1;
 }
 
-/* UI Layer Overlay */
 #ui-layer {
   position: absolute;
   top: 0;
@@ -74,12 +71,10 @@ body, html {
   padding: 16px;
 }
 
-/* Interactive elements in UI layer need pointer-events */
 .interactive {
   pointer-events: auto;
 }
 
-/* Header Bar */
 header {
   display: flex;
   justify-content: space-between;
@@ -106,7 +101,6 @@ header {
   border-radius: 12px;
   font-size: 1.1rem;
   box-shadow: 0 4px 10px rgba(255, 214, 0, 0.4);
-  letter-spacing: 1px;
 }
 
 .title-text {
@@ -121,7 +115,6 @@ header {
   gap: 10px;
 }
 
-/* Modern Kid Buttons */
 .btn-icon {
   background: rgba(255, 255, 255, 0.15);
   border: 2px solid rgba(255, 255, 255, 0.3);
@@ -144,36 +137,33 @@ header {
   border-color: var(--pea-yellow);
 }
 
-.btn-icon:active {
-  transform: scale(0.95);
-}
-
-/* Level Indicator Banner */
+/* Move level banner to bottom above status card so it doesn't obscure central AR gameplay */
 #level-banner {
   align-self: center;
-  background: linear-gradient(135deg, rgba(106, 27, 154, 0.9), rgba(56, 0, 107, 0.9));
+  margin-top: auto;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, rgba(106, 27, 154, 0.95), rgba(56, 0, 107, 0.95));
   border: 2px solid var(--pea-yellow);
   padding: 10px 24px;
-  border-radius: 30px;
+  border-radius: 20px;
   text-align: center;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
-  transform: translateY(5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
   max-width: 90%;
+  backdrop-filter: blur(10px);
 }
 
 #level-title {
   color: var(--pea-yellow);
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   font-weight: 800;
 }
 
 #level-desc {
   color: var(--white);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   margin-top: 2px;
 }
 
-/* Bottom Controller HUD */
 footer {
   display: flex;
   justify-content: space-between;
@@ -184,7 +174,7 @@ footer {
   background: var(--glass-bg);
   backdrop-filter: blur(10px);
   border: 2px solid var(--glass-border);
-  padding: 12px 18px;
+  padding: 10px 16px;
   border-radius: 16px;
   display: flex;
   align-items: center;
@@ -198,7 +188,6 @@ footer {
   border-radius: 50%;
   background: var(--danger-red);
   box-shadow: 0 0 10px var(--danger-red);
-  transition: background 0.3s;
 }
 
 .hand-indicator.active {
@@ -206,14 +195,13 @@ footer {
   box-shadow: 0 0 10px var(--success-green);
 }
 
-/* Modal Windows */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(10, 0, 20, 0.85);
+  background: rgba(10, 0, 20, 0.88);
   backdrop-filter: blur(14px);
   z-index: 100;
   display: flex;
@@ -233,50 +221,49 @@ footer {
   background: linear-gradient(145deg, #320d4e, #1a022b);
   border: 3px solid var(--pea-yellow);
   border-radius: 28px;
-  padding: 32px;
-  max-width: 520px;
+  padding: 28px;
+  max-width: 580px;
   width: 100%;
   text-align: center;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(255, 214, 0, 0.2);
-  transform: translateY(0);
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .modal-card h2 {
   color: var(--pea-yellow);
-  font-size: 2rem;
-  margin-bottom: 14px;
+  font-size: 1.8rem;
+  margin-bottom: 10px;
   font-weight: 800;
 }
 
 .modal-card p {
   color: #e0e0e0;
-  font-size: 1.05rem;
-  line-height: 1.6;
-  margin-bottom: 24px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 16px;
 }
 
 .privacy-badge {
   background: rgba(0, 230, 118, 0.15);
   border: 1px solid var(--success-green);
   color: var(--success-green);
-  padding: 10px;
+  padding: 8px 12px;
   border-radius: 12px;
-  font-size: 0.9rem;
-  margin-bottom: 24px;
+  font-size: 0.85rem;
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
 }
 
-/* Primary Action Buttons */
 .btn-primary {
   background: linear-gradient(135deg, var(--pea-yellow), var(--pea-yellow-dark));
   color: var(--pea-purple-dark);
   font-weight: 800;
-  font-size: 1.2rem;
-  padding: 14px 32px;
+  font-size: 1.1rem;
+  padding: 12px 28px;
   border: none;
   border-radius: 50px;
   cursor: pointer;
@@ -291,7 +278,6 @@ footer {
 
 .btn-primary:hover {
   transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 10px 25px rgba(255, 214, 0, 0.6);
 }
 
 .btn-secondary {
@@ -299,36 +285,21 @@ footer {
   border: 2px solid var(--pea-purple-light);
   color: var(--white);
   font-weight: 700;
-  font-size: 1.1rem;
-  padding: 12px 28px;
+  font-size: 1rem;
+  padding: 10px 24px;
   border-radius: 50px;
   cursor: pointer;
   transition: all 0.2s ease;
   margin: 6px;
 }
 
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: var(--pea-yellow);
-}
-
-/* Instructions Pulse Highlight */
 .instruction-box {
   background: rgba(255, 214, 0, 0.15);
   border: 2px dashed var(--pea-yellow);
   border-radius: 16px;
-  padding: 14px;
-  margin: 16px 0;
+  padding: 12px;
+  margin: 12px 0;
   font-weight: 600;
   color: var(--pea-yellow-light);
-}
-
-@keyframes pulseGlow {
-  0% { box-shadow: 0 0 10px rgba(255, 214, 0, 0.4); }
-  50% { box-shadow: 0 0 25px rgba(255, 214, 0, 0.8); }
-  100% { box-shadow: 0 0 10px rgba(255, 214, 0, 0.4); }
-}
-
-.pulse {
-  animation: pulseGlow 2s infinite;
+  font-size: 0.9rem;
 }
