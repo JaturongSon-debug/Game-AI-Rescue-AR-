@@ -682,20 +682,94 @@ class LevelManager {
   }
 
   renderL6(ctx, w, h) {
-    ctx.strokeStyle = "#90a4ae";
-    ctx.lineWidth = 8;
-    ctx.strokeRect(w * 0.42, h * 0.35, 130, 180);
-    ctx.fillStyle = "#b0bec5";
-    ctx.fillRect(w * 0.42, h * 0.35, 130, 180);
+    const s = this.state.l6;
+    const chairX = w * 0.5;
+    const chairY = h * 0.52;
 
-    ctx.fillStyle = "#ffd600";
+    // 1. Draw Metallic Chair Frame (โครงเก้าอี้เหล็กที่มีไฟรั่ว)
+    ctx.strokeStyle = s.isUnhooked ? "#78909c" : "#cfd8dc";
+    ctx.lineWidth = 10;
+    ctx.lineCap = "round";
+
+    // Chair Backrest Frame
+    ctx.strokeRect(chairX - 60, chairY - 110, 120, 90);
+    // Chair Seat
+    ctx.strokeRect(chairX - 70, chairY - 20, 140, 20);
+    // Chair Legs
     ctx.beginPath();
-    ctx.arc(this.state.l6.victimBeltX, this.state.l6.victimBeltY, 26, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = "#111";
-    ctx.font = "bold 12px Kanit";
+    ctx.moveTo(chairX - 55, chairY); ctx.lineTo(chairX - 65, chairY + 110);
+    ctx.moveTo(chairX + 55, chairY); ctx.lineTo(chairX + 65, chairY + 110);
+    ctx.moveTo(chairX - 35, chairY); ctx.lineTo(chairX - 40, chairY + 100);
+    ctx.moveTo(chairX + 35, chairY); ctx.lineTo(chairX + 40, chairY + 100);
+    ctx.stroke();
+
+    // Metallic Cushion Fill
+    ctx.fillStyle = s.isUnhooked ? "#90a4ae" : "#b0bec5";
+    ctx.fillRect(chairX - 54, chairY - 104, 108, 78);
+    ctx.fillRect(chairX - 64, chairY - 14, 128, 10);
+
+    // High-Voltage Hazard Label on Chair
+    ctx.fillStyle = "#ff3d00";
+    ctx.font = "bold 14px Kanit";
     ctx.textAlign = "center";
-    ctx.fillText("เกี่ยวเข็มขัด", this.state.l6.victimBeltX, this.state.l6.victimBeltY + 4);
+    ctx.fillText("⚡ โครงเก้าอี้เหล็กไฟรั่ว ⚡", chairX, chairY - 122);
+
+    // Electric Sparks Effect around chair if not unhooked
+    if (!s.isUnhooked && Math.random() < 0.6) {
+      this.addSparkParticles(chairX + (Math.random() - 0.5) * 120, chairY + (Math.random() - 0.5) * 150, 3, "#ffd600");
+    }
+
+    // 2. Draw Nong Dino Victim attached to metal chair frame
+    this.renderDinoVictimImage(ctx, chairX, chairY - 20, !s.isUnhooked);
+
+    // 3. Belt/Harness Connection Point on Victim
+    if (!s.isUnhooked) {
+      ctx.fillStyle = "#ff9800";
+      ctx.beginPath();
+      ctx.arc(s.victimBeltX, s.victimBeltY, 26, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = "#ffd600";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 13px Kanit";
+      ctx.textAlign = "center";
+      ctx.fillText("เกี่ยวเข็มขัด", s.victimBeltX, s.victimBeltY + 4);
+    }
+
+    // 4. Wooden Stick with Safety Hook (ไม้ฉนวนพร้อมขอเกี่ยวปลดผู้ป่วย)
+    const cursorX = s.isUnhooked ? chairX - 90 : s.victimBeltX - 10;
+    const cursorY = s.isUnhooked ? chairY - 40 : s.victimBeltY + 10;
+
+    // Wooden Stick Handle
+    ctx.strokeStyle = "#8d6e63";
+    ctx.lineWidth = 14;
+    ctx.beginPath();
+    ctx.moveTo(cursorX - 180, cursorY + 140);
+    ctx.lineTo(cursorX, cursorY);
+    ctx.stroke();
+
+    // Wooden Stick Grain Details
+    ctx.strokeStyle = "#5d4037";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(cursorX - 170, cursorY + 130);
+    ctx.lineTo(cursorX - 10, cursorY - 5);
+    ctx.stroke();
+
+    // Insulation Safety Hook (ขอเกี่ยวฉนวน)
+    ctx.strokeStyle = "#ffd600";
+    ctx.lineWidth = 8;
+    ctx.beginPath();
+    ctx.arc(cursorX + 15, cursorY - 10, 20, 0.4 * Math.PI, 1.6 * Math.PI, false);
+    ctx.stroke();
+
+    // Label for Wooden Hook Tool
+    ctx.fillStyle = "#ffd600";
+    ctx.font = "bold 15px Kanit";
+    ctx.textAlign = "center";
+    ctx.fillText("ไม้ฉนวนพร้อมขอเกี่ยว", cursorX - 80, cursorY + 90);
   }
 
   renderL7(ctx, w, h) {
