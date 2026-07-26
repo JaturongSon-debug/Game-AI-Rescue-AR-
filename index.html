@@ -16,24 +16,27 @@
     <canvas id="game-canvas"></canvas>
 
     <div id="ui-layer">
+      <!-- Fixed TOP Header Container containing both Top Bar and Level Banner -->
       <header class="interactive">
-        <div class="brand">
-          <div class="pea-badge">PEA</div>
-          <div class="title-text">Electrical Rescue AR</div>
+        <div class="top-bar">
+          <div class="brand">
+            <div class="pea-badge">PEA</div>
+            <div class="title-text">Electrical Rescue AR</div>
+          </div>
+
+          <div class="controls">
+            <button id="btn-sound-toggle" class="btn-icon" title="เปิด/ปิด เสียง">🔊</button>
+            <button id="btn-pause" class="btn-icon" title="พักเกม">⏸️</button>
+            <button id="btn-camera-toggle" class="btn-icon" style="width: auto; padding: 0 14px; border-radius: 20px; font-size: 0.85rem;" title="ปิด/เปิด กล้อง">🚫 ปิดกล้อง</button>
+          </div>
         </div>
 
-        <div class="controls">
-          <button id="btn-sound-toggle" class="btn-icon" title="เปิด/ปิด เสียง">🔊</button>
-          <button id="btn-pause" class="btn-icon" title="พักเกม">⏸️</button>
-          <button id="btn-camera-toggle" class="btn-icon" style="width: auto; padding: 0 16px; border-radius: 20px; font-size: 0.9rem;" title="ปิด/เปิด กล้อง">🚫 ปิดกล้อง</button>
+        <!-- Level Banner strictly located at the VERY TOP -->
+        <div id="level-banner">
+          <div id="level-title">ด่านที่ 1: ตรวจเช็กและสวมอุปกรณ์ PPE (Safety Gear)</div>
+          <div id="level-desc">สวมถุงมือยางฉนวนไฟฟ้าและรองเท้าเซฟตี้ฉนวนไฟฟ้าก่อนเข้าช่วยเหลือ</div>
         </div>
       </header>
-
-      <!-- Level Banner shifted to bottom so center screen is 100% clear for AR play -->
-      <div id="level-banner">
-        <div id="level-title">ด่านที่ 1: ตรวจเช็กและสวมอุปกรณ์ PPE (Safety Gear)</div>
-        <div id="level-desc">สวมถุงมือยางฉนวนไฟฟ้าและรองเท้าเซฟตี้ฉนวนไฟฟ้าก่อนเข้าช่วยเหลือ</div>
-      </div>
 
       <footer class="interactive">
         <div class="status-card">
@@ -46,7 +49,7 @@
       </footer>
     </div>
 
-    <!-- Enhanced Intro & Privacy Modal with Detailed Game Story & Instructions -->
+    <!-- Intro Privacy Modal -->
     <div id="privacy-modal" class="modal-overlay">
       <div class="modal-card">
         <h2>⚡ PEA Electrical Rescue AR ⚡</h2>
@@ -54,7 +57,6 @@
           เกมจำลองสถานการณ์กู้ภัยและช่วยชีวิตจากภัยไฟฟ้า ตามมาตรฐานการไฟฟ้าส่วนภูมิภาค (PEA)
         </p>
         
-        <!-- Story & Educational Rules Section -->
         <div style="background: rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 14px; text-align: left; margin-bottom: 14px; border: 1px solid rgba(255, 214, 0, 0.3); font-size: 0.88rem; line-height: 1.6; color: #f0f0f0;">
           <div style="font-weight: bold; color: #00e676; margin-bottom: 6px; font-size: 0.95rem;">📖 เรื่องราวภารกิจ & กฎเหล็กความปลอดภัย PEA:</div>
           <p style="margin-bottom: 6px;">เกิดอุบัติเหตุไฟฟ้าช็อตขึ้นในบ้าน! คุณได้รับบทบาทเป็นเจ้าหน้าที่ PEA ปฏิบัติการกู้ภัย 10 ภารกิจเร่งด่วน:</p>

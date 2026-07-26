@@ -68,14 +68,22 @@ body, html {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 16px;
+  padding: 12px 16px;
 }
 
 .interactive {
   pointer-events: auto;
 }
 
+/* Header Container including Level Banner neatly fixed at the VERY TOP */
 header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.top-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -83,28 +91,28 @@ header {
   backdrop-filter: blur(12px);
   border: 2px solid var(--glass-border);
   border-radius: 20px;
-  padding: 10px 20px;
+  padding: 8px 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .pea-badge {
   background: linear-gradient(135deg, var(--pea-yellow), var(--pea-yellow-dark));
   color: var(--pea-purple-dark);
   font-weight: 900;
-  padding: 6px 14px;
-  border-radius: 12px;
-  font-size: 1.1rem;
+  padding: 4px 12px;
+  border-radius: 10px;
+  font-size: 1rem;
   box-shadow: 0 4px 10px rgba(255, 214, 0, 0.4);
 }
 
 .title-text {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--pea-yellow);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
@@ -112,17 +120,17 @@ header {
 
 .controls {
   display: flex;
-  gap: 10px;
+  gap: 8px;
 }
 
 .btn-icon {
   background: rgba(255, 255, 255, 0.15);
   border: 2px solid rgba(255, 255, 255, 0.3);
   color: var(--white);
-  width: 44px;
-  height: 44px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -137,31 +145,30 @@ header {
   border-color: var(--pea-yellow);
 }
 
-/* Move level banner to bottom above status card so it doesn't obscure central AR gameplay */
+/* FIX: Level banner strictly docked at top right below header bar */
 #level-banner {
-  align-self: center;
-  margin-top: auto;
-  margin-bottom: 12px;
+  margin: 0 auto;
+  width: 90%;
+  max-width: 650px;
   background: linear-gradient(135deg, rgba(106, 27, 154, 0.95), rgba(56, 0, 107, 0.95));
   border: 2px solid var(--pea-yellow);
-  padding: 10px 24px;
-  border-radius: 20px;
+  padding: 6px 16px;
+  border-radius: 16px;
   text-align: center;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
-  max-width: 90%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(10px);
 }
 
 #level-title {
   color: var(--pea-yellow);
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 800;
 }
 
 #level-desc {
   color: var(--white);
-  font-size: 0.9rem;
-  margin-top: 2px;
+  font-size: 0.85rem;
+  margin-top: 1px;
 }
 
 footer {
@@ -174,17 +181,18 @@ footer {
   background: var(--glass-bg);
   backdrop-filter: blur(10px);
   border: 2px solid var(--glass-border);
-  padding: 10px 16px;
-  border-radius: 16px;
+  padding: 8px 14px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  font-size: 0.9rem;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 .hand-indicator {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: var(--danger-red);
   box-shadow: 0 0 10px var(--danger-red);
