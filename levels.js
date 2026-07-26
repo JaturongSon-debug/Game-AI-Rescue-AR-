@@ -1,5 +1,5 @@
 /**
- * levels.js - Advanced 10-Level Graphics & Character Equipment Visual Effects Renderer
+ * levels.js - Watt-D Mascot Renderer, Cute Victims, Realistic Smartphone AR, Level 5 Adjusted Gameplay
  */
 
 class LevelManager {
@@ -10,7 +10,6 @@ class LevelManager {
     this.totalScore = 0;
     this.starCount = 3;
 
-    // Visual Particle Effects Array for Sparks and Equip Shine
     this.particles = [];
 
     // Player Equipment State Across Levels
@@ -32,7 +31,8 @@ class LevelManager {
       l2: { plugX: 0, plugY: 0, socketX: 0, socketY: 0, isPlugged: true },
       l3: { breakerX: 0, breakerY: 0, handleY: 0, isPowerOn: true },
       l4: { matX: 0, matY: 0, targetX: 0, targetY: 0, isMatPlaced: false },
-      l5: { wireX: 0, wireY: 0, phase: 0, isWireOff: false },
+      // L5: Adjusted for easy AR interaction - Push button/stick touch to detach wire safely
+      l5: { wireX: 0, wireY: 0, isWireOff: false, pushProgress: 0 },
       l6: { hookX: 0, hookY: 0, victimBeltX: 0, victimBeltY: 0, isUnhooked: false },
       l7: { victimX: 0, victimY: 0, safeX: 0, safeY: 0, isRelocated: false },
       l8: { phoneDialed: "", isDialed: false },
@@ -42,13 +42,13 @@ class LevelManager {
 
     this.levelInfo = [
       {
-        title: "ด่านที่ 1: ตรวจเช็กและสวมอุปกรณ์ PPE (Safety Gear)",
-        desc: "สวมถุงมือยางฉนวนไฟฟ้าและรองเท้าเซฟตี้ฉนวนไฟฟ้าก่อนเข้าช่วยเหลือ",
-        speech: "ด่านที่หนึ่ง หนีบเลือกถุงมือยางฉนวนและรองเท้าฉนวนไฟฟ้าเพื่อความปลอดภัย"
+        title: "ด่านที่ 1: ตรวจเช็กและสวมอุปกรณ์ PPE กับน้อง Watt-D",
+        desc: "สวมถุงมือยางฉนวนไฟฟ้าและรองเท้าเซฟตี้ฉนวนไฟฟ้าให้น้อง Watt-D ก่อนเข้าช่วยเหลือ",
+        speech: "ด่านที่หนึ่ง เลือกถุงมือยางฉนวนและรองเท้าฉนวนให้น้องวัตต์ดีครับ"
       },
       {
         title: "ด่านที่ 2: ปลดปลั๊กไฟ (Unplug Safely)",
-        desc: "ดึงปลั๊กไฟเครื่องใช้ไฟฟ้าออกจากเต้ารับด้วยถุงมือฉนวนไฟฟ้า",
+        desc: "ดึงปลั๊กไฟเครื่องใช้ไฟฟ้าออกจากเต้ารับด้วยความระมัดระวัง",
         speech: "ด่านที่สอง ดึงปลั๊กไฟออกจากเต้ารับ"
       },
       {
@@ -62,9 +62,9 @@ class LevelManager {
         speech: "ด่านที่สี่ ปูแผ่นยางฉนวนลงบนพื้นเปียกเพื่อป้องกันไฟฟ้าช็อต"
       },
       {
-        title: "ด่านที่ 5: เขี่ยสายไฟที่มีไฟส่ายไปมา (Moving Wire Hook)",
-        desc: "ใช้ไม้ตะขอฉนวนเขี่ยสายไฟที่ส่ายและเกิดประกายไฟออกจากผู้ป่วย",
-        speech: "ด่านที่ห้า ใช้ไม้ฉนวนเขี่ยสายไฟที่ส่ายออกจากตัวผู้ป่วย"
+        title: "ด่านที่ 5: ใช้ไม้ฉนวนแตะผลักสายไฟออก (Easy Hook Touch)",
+        desc: "ใช้ไม้ตะขอฉนวนแตะที่สายไฟ 3 ครั้งเพื่อผลักสายไฟออกจากตัวผู้ป่วยได้อย่างสะดวก",
+        speech: "ด่านที่ห้า ใช้ไม้ฉนวนแตะผลักสายไฟออกจากตัวผู้ป่วยสามครั้ง"
       },
       {
         title: "ด่านที่ 6: ปลดผู้ป่วยออกจากโครงเหล็ก (Unhook Victim)",
@@ -73,13 +73,13 @@ class LevelManager {
       },
       {
         title: "ด่านที่ 7: ย้ายผู้ป่วยไปยังเขตปลอดภัย (Relocate to Safe Zone)",
-        desc: "ลากผู้ป่วยออกจากบริเวณ 위험 ไปยังเขตแห้งปลอดภัย",
+        desc: "ลากผู้ป่วยออกจากบริเวณน้ำขังไปยังเขตแห้งปลอดภัย",
         speech: "ด่านที่เจ็ด ลากตัวผู้ป่วยไปยังเขตแห้งปลอดภัย"
       },
       {
-        title: "ด่านที่ 8: โทรสายด่วน PEA 1129 (Dial Emergency)",
-        desc: "กดโทรสายด่วน 1129 บนแป้นโทรศัพท์ AR เพื่อแจ้งเหตุฉุกเฉิน",
-        speech: "ด่านที่แปด กดโทรสายด่วน 1 1 2 9"
+        title: "ด่านที่ 8: โทรสายด่วน PEA 1129 บนสมาร์ทโฟน",
+        desc: "กด 1129 บนหน้าจอสมาร์ทโฟนเพื่อแจ้งสายด่วนฉุกเฉิน PEA",
+        speech: "ด่านที่แปด กดโทรสายด่วน 1 1 2 9 บนสมาร์ทโฟน"
       },
       {
         title: "ด่านที่ 9: ตบไหล่เรียกและเปิดทางเดินหายใจ (Airway Check)",
@@ -126,7 +126,7 @@ class LevelManager {
     } else if (levelNum === 5) {
       this.state.l5.wireX = w * 0.45;
       this.state.l5.wireY = h * 0.55;
-      this.state.l5.phase = 0;
+      this.state.l5.pushProgress = 0;
       this.state.l5.isWireOff = false;
     } else if (levelNum === 6) {
       this.state.l6.hookX = w * 0.2;
@@ -206,13 +206,13 @@ class LevelManager {
       const gloveDist = Math.hypot(cx - (w * 0.25), cy - (h * 0.5));
       const bootDist = Math.hypot(cx - (w * 0.75), cy - (h * 0.5));
 
-      if (isPinch && gloveDist < 75 && !this.state.l1.ppeGloves) {
+      if (isPinch && gloveDist < 80 && !this.state.l1.ppeGloves) {
         this.state.l1.ppeGloves = true;
         this.playerEquipped.gloves = true;
         this.addSparkParticles(w * 0.25, h * 0.5, 15, "#00e676");
         soundManager.playGrab();
       }
-      if (isPinch && bootDist < 75 && !this.state.l1.ppeBoots) {
+      if (isPinch && bootDist < 80 && !this.state.l1.ppeBoots) {
         this.state.l1.ppeBoots = true;
         this.playerEquipped.boots = true;
         this.addSparkParticles(w * 0.75, h * 0.5, 15, "#00e676");
@@ -224,7 +224,7 @@ class LevelManager {
     } else if (this.currentLevel === 2) {
       // Level 2: Unplug
       const dist = Math.hypot(cx - this.state.l2.plugX, cy - this.state.l2.plugY);
-      if (sPluggedSpark()) this.addSparkParticles(this.state.l2.socketX, this.state.l2.socketY, 2, "#ffd600");
+      if (Math.random() < 0.25) this.addSparkParticles(this.state.l2.socketX, this.state.l2.socketY, 2, "#ffd600");
 
       if (isPinch && dist < 65) {
         this.state.l2.plugX = cx;
@@ -273,23 +273,20 @@ class LevelManager {
         }
       }
     } else if (this.currentLevel === 5) {
-      // Level 5: Dynamic Swaying Wire
-      if (!this.state.l5.isWireOff) {
-        this.state.l5.phase += 0.06;
-        this.state.l5.wireX = (w * 0.45) + Math.sin(this.state.l5.phase) * 80;
-        if (Math.random() < 0.4) {
-          this.addSparkParticles(this.state.l5.wireX, this.state.l5.wireY, 4, "#ff3d00");
-          soundManager.playElectricSpark();
-        }
-      }
+      // Level 5: Adjusted for Easy AR - Touch/Pinch 3 times to push wire
       const dist = Math.hypot(cx - this.state.l5.wireX, cy - this.state.l5.wireY);
-      if (isPinch && dist < 90) {
-        this.state.l5.wireX = cx;
-        this.state.l5.wireY = cy;
-        if (Math.abs(cx - (w * 0.45)) > 160) {
+      if (!this.state.l5.isWireOff && Math.random() < 0.3) {
+        this.addSparkParticles(this.state.l5.wireX, this.state.l5.wireY, 3, "#ff3d00");
+      }
+      if (isPinch && dist < 85) {
+        this.state.l5.pushProgress++;
+        this.addSparkParticles(this.state.l5.wireX, this.state.l5.wireY, 8, "#ffd600");
+        this.state.l5.wireX -= 40; // Push wire away smoothly
+        soundManager.playClick();
+        if (this.state.l5.pushProgress >= 3) {
           this.state.l5.isWireOff = true;
           this.playerEquipped.wireOff = true;
-          this.addSparkParticles(cx, cy, 25, "#00e676");
+          this.addSparkParticles(this.state.l5.wireX, this.state.l5.wireY, 25, "#00e676");
           this.completeLevel();
         }
       }
@@ -388,15 +385,11 @@ class LevelManager {
   }
 
   render(ctx, width, height, handTracker) {
-    // Render Room Environment
-    ctx.fillStyle = "#1b0730";
-    ctx.fillRect(0, 0, width, height);
+    // Cartoon Room Environment
+    this.renderCartoonBackground(ctx, width, height);
 
-    ctx.fillStyle = "#2a0e45";
-    ctx.fillRect(0, height * 0.68, width, height * 0.32);
-
-    // Draw Rescuer PEA Character HUD Avatar on Left Side
-    this.renderPEARescuerAvatar(ctx, 80, height * 0.72);
+    // Draw Official PEA Mascot "Nong Watt-D" HUD Avatar on Left Side
+    this.renderNongWattDAvatar(ctx, 90, height * 0.72);
 
     // Render corresponding level object graphics
     if (this.currentLevel === 1) this.renderL1(ctx, width, height);
@@ -417,43 +410,109 @@ class LevelManager {
     this.renderCursor(ctx, handTracker);
   }
 
-  // Draw PEA Rescuer Character showing equipped gloves/boots in real-time
-  renderPEARescuerAvatar(ctx, x, y) {
+  // Cartoon Background Room (Living Room with wallpaper & windows)
+  renderCartoonBackground(ctx, w, h) {
+    // Purple Wall
+    ctx.fillStyle = "#341052";
+    ctx.fillRect(0, 0, w, h);
+
+    // Wooden/Tile Floor
+    ctx.fillStyle = "#4a1c6d";
+    ctx.fillRect(0, h * 0.65, w, h * 0.35);
+
+    // Skirting board line
+    ctx.fillStyle = "#ffd600";
+    ctx.fillRect(0, h * 0.65 - 4, w, 6);
+
+    // Cartoon Window on top right
+    ctx.fillStyle = "#81d4fa";
+    ctx.fillRect(w * 0.78, h * 0.12, 110, 80);
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 6;
+    ctx.strokeRect(w * 0.78, h * 0.12, 110, 80);
+    ctx.beginPath();
+    ctx.moveTo(w * 0.78 + 55, h * 0.12); ctx.lineTo(w * 0.78 + 55, h * 0.12 + 80);
+    ctx.moveTo(w * 0.78, h * 0.12 + 40); ctx.lineTo(w * 0.78 + 110, h * 0.12 + 40);
+    ctx.stroke();
+  }
+
+  // Draw Official PEA Mascot "Nong Watt-D" Avatar with Lightning Ears & PEA Logo
+  renderNongWattDAvatar(ctx, x, y) {
     ctx.shadowColor = "rgba(0,0,0,0.5)";
     ctx.shadowBlur = 10;
 
-    // Body/Uniform (PEA Purple)
-    ctx.fillStyle = "#6a1b9a";
-    ctx.fillRect(x - 22, y - 25, 44, 55);
-
-    // Head
-    ctx.fillStyle = "#ffcc80";
+    // Body (PEA Purple Suit)
+    ctx.fillStyle = "#741b8a";
     ctx.beginPath();
-    ctx.arc(x, y - 45, 20, 0, Math.PI * 2);
+    ctx.arc(x, y, 32, 0, Math.PI * 2);
     ctx.fill();
 
-    // PEA Safety Helmet (Yellow)
-    ctx.fillStyle = "#ffd600";
+    // White Face Mask
+    ctx.fillStyle = "#ffffff";
     ctx.beginPath();
-    ctx.arc(x, y - 52, 22, Math.PI, Math.PI * 2);
+    ctx.ellipse(x, y - 4, 22, 18, 0, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillRect(x - 24, y - 52, 48, 6);
 
-    // Insulated Rubber Gloves (Green if equipped)
-    ctx.fillStyle = this.playerEquipped.gloves ? "#00e676" : "#e0e0e0";
-    ctx.fillRect(x - 36, y - 10, 12, 24);
-    ctx.fillRect(x + 24, y - 10, 12, 24);
+    // Cute Big Eyes
+    ctx.fillStyle = "#111";
+    ctx.beginPath();
+    ctx.arc(x - 9, y - 6, 4, 0, Math.PI * 2);
+    ctx.arc(x + 9, y - 6, 4, 0, Math.PI * 2);
+    ctx.fill();
 
-    // Insulated Safety Boots (Green if equipped)
-    ctx.fillStyle = this.playerEquipped.boots ? "#00e676" : "#424242";
-    ctx.fillRect(x - 18, y + 30, 16, 20);
-    ctx.fillRect(x + 2, y + 30, 16, 20);
+    // Smile
+    ctx.strokeStyle = "#811877";
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(x, y, 8, 0.1 * Math.PI, 0.9 * Math.PI);
+    ctx.stroke();
 
-    // Avatar Label
-    ctx.fillStyle = "#ffd600";
-    ctx.font = "bold 12px Kanit";
+    // PEA Text on chest
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 11px Kanit";
     ctx.textAlign = "center";
-    ctx.fillText("เจ้าหน้าที่ PEA", x, y + 62);
+    ctx.fillText("PEA", x, y + 20);
+
+    // Lightning Bolt Ears (Gold Pantone 1245 / Yellow)
+    ctx.fillStyle = "#c7a500";
+    // Left Bolt
+    ctx.beginPath();
+    ctx.moveTo(x - 22, y - 26);
+    ctx.lineTo(x - 34, y - 46);
+    ctx.lineTo(x - 24, y - 44);
+    ctx.lineTo(x - 30, y - 56);
+    ctx.lineTo(x - 14, y - 34);
+    ctx.lineTo(x - 20, y - 35);
+    ctx.closePath();
+    ctx.fill();
+
+    // Right Bolt
+    ctx.beginPath();
+    ctx.moveTo(x + 22, y - 26);
+    ctx.lineTo(x + 34, y - 46);
+    ctx.lineTo(x + 24, y - 44);
+    ctx.lineTo(x + 30, y - 56);
+    ctx.lineTo(x + 14, y - 34);
+    ctx.lineTo(x + 20, y - 35);
+    ctx.closePath();
+    ctx.fill();
+
+    // Insulated Rubber Gloves indicator (Green if equipped)
+    ctx.fillStyle = this.playerEquipped.gloves ? "#00e676" : "#c2185b";
+    ctx.beginPath();
+    ctx.arc(x - 34, y + 10, 10, 0, Math.PI * 2);
+    ctx.arc(x + 34, y + 10, 10, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Insulated Safety Boots indicator (Green if equipped)
+    ctx.fillStyle = this.playerEquipped.boots ? "#00e676" : "#333333";
+    ctx.fillRect(x - 18, y + 28, 14, 16);
+    ctx.fillRect(x + 4, y + 28, 14, 16);
+
+    // Name Label
+    ctx.fillStyle = "#ffd600";
+    ctx.font = "bold 13px Kanit";
+    ctx.fillText("น้อง Watt-D (PEA)", x, y + 56);
     ctx.shadowBlur = 0;
   }
 
@@ -467,30 +526,27 @@ class LevelManager {
     ctx.fillStyle = "#111";
     ctx.font = "bold 16px Kanit";
     ctx.textAlign = "center";
-    ctx.fillText(this.state.l1.ppeGloves ? "✓ ถุงมือฉนวน" : "ถุงมือยางฉนวน", w * 0.25, h * 0.5);
+    ctx.fillText(this.state.l1.ppeGloves ? "✓ สวมถุงมือแล้ว" : "ถุงมือยางฉนวน", w * 0.25, h * 0.5);
 
     // Insulated Boots Icon Card
     ctx.fillStyle = this.state.l1.ppeBoots ? "#00e676" : "#ffd600";
     ctx.fillRect(w * 0.75 - 60, h * 0.5 - 60, 120, 120);
     ctx.strokeRect(w * 0.75 - 60, h * 0.5 - 60, 120, 120);
     ctx.fillStyle = "#111";
-    ctx.fillText(this.state.l1.ppeBoots ? "✓ รองเท้าฉนวน" : "รองเท้าฉนวนไฟฟ้า", w * 0.75, h * 0.5);
+    ctx.fillText(this.state.l1.ppeBoots ? "✓ สวมรองเท้าแล้ว" : "รองเท้าฉนวนไฟฟ้า", w * 0.75, h * 0.5);
   }
 
   renderL2(ctx, w, h) {
     const s = this.state.l2;
-    // Wall Socket Box
     ctx.fillStyle = "#eceff1";
     ctx.fillRect(s.socketX - 45, s.socketY - 45, 90, 90);
     ctx.strokeStyle = "#ffd600";
     ctx.strokeRect(s.socketX - 45, s.socketY - 45, 90, 90);
 
-    // Socket holes
     ctx.fillStyle = "#263238";
     ctx.fillRect(s.socketX - 18, s.socketY - 18, 10, 24);
     ctx.fillRect(s.socketX + 8, s.socketY - 18, 10, 24);
 
-    // Plug
     ctx.fillStyle = s.isPlugged ? "#ff5252" : "#00e676";
     ctx.fillRect(s.plugX - 30, s.plugY - 30, 60, 60);
     ctx.fillStyle = "#fff";
@@ -517,13 +573,11 @@ class LevelManager {
 
   renderL4(ctx, w, h) {
     const s = this.state.l4;
-    // Wet area puddle
     ctx.fillStyle = "rgba(0, 180, 216, 0.35)";
     ctx.beginPath();
     ctx.ellipse(s.targetX, s.targetY, 130, 65, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Mat
     ctx.fillStyle = s.isMatPlaced ? "#00e676" : "#ffd600";
     ctx.fillRect(s.matX - 70, s.matY - 35, 140, 70);
     ctx.fillStyle = "#111";
@@ -534,9 +588,8 @@ class LevelManager {
 
   renderL5(ctx, w, h) {
     const s = this.state.l5;
-    this.renderVictim(ctx, w * 0.45, h * 0.65, !s.isWireOff);
+    this.renderCuteVictim(ctx, w * 0.45, h * 0.65, !s.isWireOff);
 
-    // Live Wire
     ctx.strokeStyle = s.isWireOff ? "#78909c" : "#ff3d00";
     ctx.lineWidth = 8;
     ctx.beginPath();
@@ -544,13 +597,18 @@ class LevelManager {
     ctx.lineTo(s.wireX, s.wireY);
     ctx.stroke();
 
-    // Insulated Fiberglass Pole Graphic attached to cursor
-    ctx.strokeStyle = "#ffb74d";
-    ctx.lineWidth = 10;
-    ctx.beginPath();
-    ctx.moveTo(s.wireX, s.wireY);
-    ctx.lineTo(s.wireX - 120, s.wireY + 140);
-    ctx.stroke();
+    // Easy Touch Helper Target Ring
+    if (!s.isWireOff) {
+      ctx.strokeStyle = "#ffd600";
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.arc(s.wireX, s.wireY, 35, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 14px Kanit";
+      ctx.textAlign = "center";
+      ctx.fillText(`หนีบแตะเขี่ยไฟ (${s.pushProgress}/3)`, s.wireX, s.wireY - 45);
+    }
   }
 
   renderL6(ctx, w, h) {
@@ -577,39 +635,68 @@ class LevelManager {
     ctx.textAlign = "center";
     ctx.fillText("เขตแห้งปลอดภัย", s.safeX, s.safeY);
 
-    this.renderVictim(ctx, s.victimX, s.victimY, false);
+    this.renderCuteVictim(ctx, s.victimX, s.victimY, false);
   }
 
+  // Level 8: Realistic Smartphone Frame with Dialing Keypad
   renderL8(ctx, w, h) {
     const s = this.state.l8;
-    ctx.fillStyle = "rgba(20, 10, 35, 0.92)";
-    ctx.fillRect(w * 0.35, h * 0.22, w * 0.3, h * 0.65);
-    ctx.strokeStyle = "#ffd600";
-    ctx.strokeRect(w * 0.35, h * 0.22, w * 0.3, h * 0.65);
+    const phoneX = w * 0.36;
+    const phoneY = h * 0.16;
+    const phoneW = w * 0.28;
+    const phoneH = h * 0.72;
 
-    ctx.fillStyle = "#fff";
+    // Realistic Modern Smartphone Casing
+    ctx.fillStyle = "#111111";
+    ctx.beginPath();
+    ctx.roundRect(phoneX, phoneY, phoneW, phoneH, 28);
+    ctx.fill();
+    ctx.strokeStyle = "#ffd600";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // Screen Area
+    ctx.fillStyle = "#1a102f";
+    ctx.beginPath();
+    ctx.roundRect(phoneX + 10, phoneY + 30, phoneW - 20, phoneH - 50, 16);
+    ctx.fill();
+
+    // Phone Camera Speaker Notch
+    ctx.fillStyle = "#333";
+    ctx.beginPath();
+    ctx.arc(w * 0.5, phoneY + 16, 6, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Dial Screen Display
+    ctx.fillStyle = "#ffffff";
     ctx.font = "bold 26px Kanit";
     ctx.textAlign = "center";
-    ctx.fillText(s.phoneDialed || "กด 1129", w * 0.5, h * 0.29);
+    ctx.fillText(s.phoneDialed || "กด 1129", w * 0.5, phoneY + 75);
 
+    // Keypad Buttons
     const keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "C", "0", "Call"];
     keys.forEach((k, idx) => {
       const row = Math.floor(idx / 3);
       const col = idx % 3;
-      const kx = w * 0.4 + col * (w * 0.08);
-      const ky = h * 0.37 + row * (h * 0.11);
-      ctx.fillStyle = "#6a1b9a";
+      const kx = w * 0.41 + col * (w * 0.075);
+      const ky = phoneY + 130 + row * (h * 0.11);
+
+      ctx.fillStyle = k === "Call" ? "#00e676" : "#6a1b9a";
       ctx.beginPath();
-      ctx.arc(kx, ky, 24, 0, Math.PI * 2);
+      ctx.arc(kx, ky, 22, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = "#fff";
+      ctx.strokeStyle = "#ffd600";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.fillStyle = "#ffffff";
       ctx.font = "bold 16px Kanit";
       ctx.fillText(k, kx, ky + 5);
     });
   }
 
   renderL9(ctx, w, h) {
-    this.renderVictim(ctx, w * 0.5, h * 0.55, false);
+    this.renderCuteVictim(ctx, w * 0.5, h * 0.55, false);
 
     ctx.fillStyle = "#fff";
     ctx.font = "bold 18px Kanit";
@@ -620,7 +707,7 @@ class LevelManager {
 
   renderL10(ctx, w, h) {
     const s = this.state.l10;
-    this.renderVictim(ctx, w * 0.5, h * 0.6, false);
+    this.renderCuteVictim(ctx, w * 0.5, h * 0.6, false);
 
     const beatRadius = s.isCPRBeatActive ? 50 : 32;
     ctx.fillStyle = "rgba(255, 61, 0, 0.45)";
@@ -634,23 +721,42 @@ class LevelManager {
     ctx.fillText(`ปั๊มหัวใจ (CPR): ${s.cprCount} / ${s.targetCPR}`, w * 0.5, h * 0.35);
   }
 
-  renderVictim(ctx, x, y, isSparksActive) {
-    // Head
-    ctx.fillStyle = "#ffb74d";
+  // Enhanced Kid-friendly Cute Cartoon Victim Character
+  renderCuteVictim(ctx, x, y, isSparksActive) {
+    // Cute Head
+    ctx.fillStyle = "#ffe0b2";
     ctx.beginPath();
-    ctx.arc(x, y - 40, 24, 0, Math.PI * 2);
+    ctx.arc(x, y - 40, 26, 0, Math.PI * 2);
     ctx.fill();
 
-    // Body Shirt
-    ctx.fillStyle = "#42a5f5";
-    ctx.fillRect(x - 22, y - 16, 44, 52);
+    // Cute Dressed Eyes (Closed/Dizzy for electrocution effect)
+    ctx.strokeStyle = "#37474f";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(x - 10, y - 42, 5, 0, Math.PI);
+    ctx.arc(x + 10, y - 42, 5, 0, Math.PI);
+    ctx.stroke();
 
+    // Cheeks
+    ctx.fillStyle = "#ff8a80";
+    ctx.beginPath();
+    ctx.arc(x - 16, y - 36, 4, 0, Math.PI * 2);
+    ctx.arc(x + 16, y - 36, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Cute Cartoon Shirt
+    ctx.fillStyle = "#29b6f6";
+    ctx.beginPath();
+    ctx.roundRect(x - 24, y - 12, 48, 55, 12);
+    ctx.fill();
+
+    // Shock sparks visual effect
     if (isSparksActive) {
       ctx.strokeStyle = "#ffd600";
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 3.5;
       ctx.beginPath();
-      ctx.moveTo(x - 35, y - 35); ctx.lineTo(x + 35, y + 35);
-      ctx.moveTo(x + 35, y - 35); ctx.lineTo(x - 35, y + 35);
+      ctx.moveTo(x - 38, y - 38); ctx.lineTo(x + 38, y + 38);
+      ctx.moveTo(x + 38, y - 38); ctx.lineTo(x - 38, y + 38);
       ctx.stroke();
     }
   }
@@ -668,10 +774,6 @@ class LevelManager {
     ctx.lineWidth = 3;
     ctx.stroke();
   }
-}
-
-function sPluggedSpark() {
-  return Math.random() < 0.25;
 }
 
 const levelManager = new LevelManager();
