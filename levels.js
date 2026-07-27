@@ -253,11 +253,11 @@ class LevelManager {
       const dist = Math.hypot(cx - this.state.l2.plugX, cy - this.state.l2.plugY);
       if (Math.random() < 0.25) this.addSparkParticles(this.state.l2.socketX, this.state.l2.socketY, 2, "#ffd600");
 
-      if (isPinch && dist < 75) {
+      if (isPinch && dist < 85) {
         this.state.l2.plugX = cx;
         this.state.l2.plugY = cy;
         const pullDist = Math.hypot(this.state.l2.plugX - this.state.l2.socketX, this.state.l2.plugY - this.state.l2.socketY);
-        if (pullDist > 220 && this.state.l2.isPlugged) { // เพิ่มระยะการดึงปลั๊กไฟออกจาก 120px เป็น 220px
+        if (pullDist > 300 && this.state.l2.isPlugged) { // เพิ่มระยะการดึงปลั๊กไฟออกเป็น 300px อย่างชัดเจน
           this.state.l2.isPlugged = false;
           this.addSparkParticles(this.state.l2.plugX, this.state.l2.plugY, 20, "#ff5252");
           soundManager.playUnplug();
@@ -308,7 +308,7 @@ class LevelManager {
           this.state.l5.isPinching = true;
           this.state.l5.pushProgress++;
           this.addSparkParticles(this.state.l5.wireX, this.state.l5.wireY, 12, "#ffd600");
-          this.state.l5.wireX -= 70; // เพิ่มระยะการดันไม้ผลักสายไฟออกจาก 35px เป็น 70px ต่อครั้ง
+          this.state.l5.wireX -= 70;
           soundManager.playClick();
           if (this.state.l5.pushProgress >= this.state.l5.targetPushes) {
             this.state.l5.isWireOff = true;
@@ -327,16 +327,17 @@ class LevelManager {
       }
 
       if (isPinch) {
-        if (!this.state.l6.isPinching && dist < 90 && !this.state.l6.isUnhooked) {
+        // เพิ่มรัศมีตรวจจับการเกี่ยวไม้ดึงด่าน 6 เป็น 110px ขจัดอาการดีเลย์ ตอบสนองทันที
+        if (!this.state.l6.isPinching && dist < 110 && !this.state.l6.isUnhooked) {
           this.state.l6.isPinching = true;
           this.state.l6.pullCount++;
-          this.addSparkParticles(cx, cy, 12, "#ffd600");
-          this.state.l6.victimBeltX -= 50; // เพิ่มระยะทางในการเกี่ยวไม้ดึงผู้ป่วยออกจากโครงเก้าอี้เหล็กไฟรั่ว 50px ต่อครั้ง
+          this.addSparkParticles(this.state.l6.victimBeltX, this.state.l6.victimBeltY, 16, "#ffd600");
+          this.state.l6.victimBeltX -= 85; // ดึงผู้ป่วยเคลื่อนที่ออกห่างจากเก้าอี้ไฟรั่วอย่างชัดเจนและตอบสนองทันที (85px ต่อครั้ง)
           soundManager.playClick();
           if (this.state.l6.pullCount >= this.state.l6.targetPulls) {
             this.state.l6.isUnhooked = true;
             this.playerEquipped.victimUnhooked = true;
-            this.addSparkParticles(cx, cy, 25, "#00e676");
+            this.addSparkParticles(this.state.l6.victimBeltX, this.state.l6.victimBeltY, 25, "#00e676");
             soundManager.playGrab();
             this.completeLevel();
           }
