@@ -38,7 +38,7 @@ class LevelManager {
       l5: { wireX: 0, wireY: 0, isWireOff: false, pushProgress: 0 },
       l6: { hookX: 0, hookY: 0, victimBeltX: 0, victimBeltY: 0, isUnhooked: false },
       l7: { victimX: 0, victimY: 0, safeX: 0, safeY: 0, isRelocated: false },
-      l8: { phoneDialed: "", isDialed: false },
+      l8: { phoneDialed: "", isDialed: false, wasPinching: false },
       l9: { shoulderTaps: 0, chinTilted: false },
       l10: { cprCount: 0, targetCPR: 10, isCPRBeatActive: false, lastCompressionTime: 0 }
     };
@@ -146,6 +146,7 @@ class LevelManager {
     } else if (levelNum === 8) {
       this.state.l8.phoneDialed = "";
       this.state.l8.isDialed = false;
+      this.state.l8.wasPinching = false;
     } else if (levelNum === 9) {
       this.state.l9.shoulderTaps = 0;
       this.state.l9.chinTilted = false;
@@ -330,19 +331,22 @@ class LevelManager {
       const colGap = screenW / 3;
       const btnRadius = Math.min(24, Math.min(colGap, rowGap) * 0.38);
 
-      const now = Date.now();
-      if (isPinch && (!this.state.l8.lastPressTime || now - this.state.l8.lastPressTime > 300)) {
-        keys.forEach((k, idx) => {
-          const row = Math.floor(idx / 3);
-          const col = idx % 3;
-          const kx = screenX + colGap * (col + 0.5);
-          const ky = startY + rowGap * (row + 0.4);
+      if (isPinch) {
+        if (!this.state.l8.wasPinching) {
+          this.state.l8.wasPinching = true;
+          keys.forEach((k, idx) => {
+            const row = Math.floor(idx / 3);
+            const col = idx % 3;
+            const kx = screenX + colGap * (col + 0.5);
+            const ky = startY + rowGap * (row + 0.4);
 
-          if (Math.hypot(cx - kx, cy - ky) < btnRadius + 12) {
-            this.state.l8.lastPressTime = now;
-            this.pressKeypad(k);
-          }
-        });
+            if (Math.hypot(cx - kx, cy - ky) < btnRadius + 12) {
+              this.pressKeypad(k);
+            }
+          });
+        }
+      } else {
+        this.state.l8.wasPinching = false;
       }
 
       if (this.state.l8.phoneDialed === "1129" && !this.state.l8.isDialed) {

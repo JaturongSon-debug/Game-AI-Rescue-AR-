@@ -99,40 +99,6 @@ class GameApp {
       }
     });
 
-    this.canvas.addEventListener('click', (e) => {
-      if (levelManager.currentLevel === 8 && levelManager.state.l8.phoneDialed !== "1129") {
-        const w = this.canvas.width;
-        const h = this.canvas.height;
-        
-        const phoneW = Math.min(w * 0.75, Math.max(260, Math.min(w * 0.38, 320)));
-        const phoneH = Math.min(h * 0.65, 520);
-        const phoneX = (w - phoneW) / 2;
-        const phoneY = Math.max(h * 0.22, 130);
-
-        const screenX = phoneX + 8;
-        const screenY = phoneY + 32;
-        const screenW = phoneW - 16;
-        const screenH = phoneH - 42;
-
-        const keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "C", "0", "Call"];
-        const startY = screenY + 115;
-        const rowGap = (screenH - 130) / 4;
-        const colGap = screenW / 3;
-        const btnRadius = Math.min(24, Math.min(colGap, rowGap) * 0.38);
-
-        keys.forEach((k, idx) => {
-          const row = Math.floor(idx / 3);
-          const col = idx % 3;
-          const kx = screenX + colGap * (col + 0.5);
-          const ky = startY + rowGap * (row + 0.4);
-          const dist = Math.hypot(e.clientX - kx, e.clientY - ky);
-          if (dist < btnRadius + 10) {
-            levelManager.pressKeypad(k);
-          }
-        });
-      }
-    });
-
     this.elements.btnNextLevel.addEventListener('click', () => {
       soundManager.playClick();
       this.elements.winModal.classList.add('hidden');
