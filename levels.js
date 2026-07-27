@@ -35,8 +35,8 @@ class LevelManager {
       l2: { plugX: 0, plugY: 0, socketX: 0, socketY: 0, isPlugged: true },
       l3: { breakerX: 0, breakerY: 0, handleY: 0, isPowerOn: true },
       l4: { matX: 0, matY: 0, targetX: 0, targetY: 0, isMatPlaced: false },
-      l5: { wireX: 0, wireY: 0, isWireOff: false, pushProgress: 0 },
-      l6: { hookX: 0, hookY: 0, victimBeltX: 0, victimBeltY: 0, isUnhooked: false },
+      l5: { wireX: 0, wireY: 0, isWireOff: false, pushProgress: 0, targetPushes: 3, isPinching: false },
+      l6: { hookX: 0, hookY: 0, victimBeltX: 0, victimBeltY: 0, pullCount: 0, targetPulls: 3, isUnhooked: false, isPinching: false },
       l7: { victimX: 0, victimY: 0, safeX: 0, safeY: 0, isRelocated: false },
       l8: { phoneDialed: "", isDialed: false, wasPinching: false },
       l9: { shoulderTaps: 0, chinTilted: false },
@@ -66,12 +66,12 @@ class LevelManager {
       },
       {
         title: "ด่านที่ 5: ใช้ไม้ฉนวนแห้งแตะผลักสายไฟออก",
-        desc: "ใช้ไม้ตะขอฉนวนไฟเบอร์กลาสแห้ง แตะผลักสายไฟออกจากตัวน้องไดโนเสาร์ 3 ครั้ง",
+        desc: "ใช้ไม้ตะขอฉนวนไฟเบอร์กลาสแห้ง แตะผลักสายไฟออกจากตัวน้องไดโนเสาร์ตามจำนวนครั้งที่กำหนด",
         speech: "ด่านที่ห้า ใช้ไม้แห้งฉนวนแตะผลักสายไฟออกจากตัวผู้ป่วย"
       },
       {
         title: "ด่านที่ 6: ปลดน้องไดโนเสาร์ออกจากโครงเก้าอี้เหล็กที่มีไฟรั่ว",
-        desc: "ใช้ไม้ตะขอฉนวนเกี่ยวเข็มขัดปลดน้องไดโนเสาร์ออกจากโครงเก้าอี้เหล็ก",
+        desc: "ใช้ไม้ตะขอฉนวนเกี่ยวเข็มขัดดึงปลดน้องไดโนเสาร์ออกจากโครงเก้าอี้เหล็กตามจำนวนครั้งที่กำหนด",
         speech: "ด่านที่หก เกี่ยวเข็มขัดปลดผู้ป่วยออกจากโครงเก้าอี้เหล็กมีไฟรั่ว"
       },
       {
@@ -121,27 +121,52 @@ class LevelManager {
       this.state.l3.handleY = h * 0.35;
       this.state.l3.isPowerOn = true;
     } else if (levelNum === 4) {
-      this.state.l4.matX = w * 0.18;
-      this.state.l4.matY = h * 0.75;
-      this.state.l4.targetX = w * 0.45;
+      // สุ่มตำแหน่งวางแผ่นยางด่าน 4 (ไม่ให้ทับกับเป้าหมายตรงกลาง)
+      const randomSides = [
+        { x: w * 0.15, y: h * 0.75 },
+        { x: w * 0.15, y: h * 0.42 },
+        { x: w * 0.82, y: h * 0.75 },
+        { x: w * 0.82, y: h * 0.42 }
+      ];
+      const selectedStart = randomSides[Math.floor(Math.random() * randomSides.length)];
+      this.state.l4.matX = selectedStart.x;
+      this.state.l4.matY = selectedStart.y;
+      this.state.l4.targetX = w * 0.5;
       this.state.l4.targetY = h * 0.65;
       this.state.l4.isMatPlaced = false;
     } else if (levelNum === 5) {
       this.state.l5.wireX = w * 0.45;
       this.state.l5.wireY = h * 0.55;
       this.state.l5.pushProgress = 0;
+      this.state.l5.targetPushes = Math.floor(Math.random() * 3) + 3; // สุ่ม 3 ถึง 5 ครั้ง
       this.state.l5.isWireOff = false;
+      this.state.l5.isPinching = false;
     } else if (levelNum === 6) {
       this.state.l6.hookX = w * 0.2;
       this.state.l6.hookY = h * 0.4;
       this.state.l6.victimBeltX = w * 0.5;
       this.state.l6.victimBeltY = h * 0.5;
+      this.state.l6.pullCount = 0;
+      this.state.l6.targetPulls = Math.floor(Math.random() * 3) + 3; // สุ่ม 3 ถึง 5 ครั้ง
       this.state.l6.isUnhooked = false;
+      this.state.l6.isPinching = false;
     } else if (levelNum === 7) {
-      this.state.l7.victimX = w * 0.35;
-      this.state.l7.victimY = h * 0.65;
-      this.state.l7.safeX = w * 0.75;
-      this.state.l7.safeY = h * 0.35;
+      // สุ่มจุดเกิดน้องไดโนเสาร์และเขตแห้งปลอดภัย ห้ามทับกัน (ห่างกันอย่างน้อย 260px)
+      let vx, vy, sx, sy, dist;
+      const minX = w * 0.25, maxX = w * 0.75;
+      const minY = h * 0.35, maxY = h * 0.75;
+      do {
+        vx = minX + Math.random() * (maxX - minX);
+        vy = minY + Math.random() * (maxY - minY);
+        sx = minX + Math.random() * (maxX - minX);
+        sy = minY + Math.random() * (maxY - minY);
+        dist = Math.hypot(vx - sx, vy - sy);
+      } while (dist < 260);
+
+      this.state.l7.victimX = vx;
+      this.state.l7.victimY = vy;
+      this.state.l7.safeX = sx;
+      this.state.l7.safeY = sy;
       this.state.l7.isRelocated = false;
     } else if (levelNum === 8) {
       this.state.l8.phoneDialed = "";
@@ -277,29 +302,46 @@ class LevelManager {
       if (!this.state.l5.isWireOff && Math.random() < 0.3) {
         this.addSparkParticles(this.state.l5.wireX, this.state.l5.wireY, 3, "#ff3d00");
       }
-      if (isPinch && dist < 85) {
-        this.state.l5.pushProgress++;
-        this.addSparkParticles(this.state.l5.wireX, this.state.l5.wireY, 8, "#ffd600");
-        this.state.l5.wireX -= 40;
-        soundManager.playClick();
-        if (this.state.l5.pushProgress >= 3) {
-          this.state.l5.isWireOff = true;
-          this.playerEquipped.wireOff = true;
-          this.addSparkParticles(this.state.l5.wireX, this.state.l5.wireY, 25, "#00e676");
-          this.completeLevel();
+
+      if (isPinch) {
+        if (!this.state.l5.isPinching && dist < 85 && !this.state.l5.isWireOff) {
+          this.state.l5.isPinching = true;
+          this.state.l5.pushProgress++;
+          this.addSparkParticles(this.state.l5.wireX, this.state.l5.wireY, 12, "#ffd600");
+          this.state.l5.wireX -= 35;
+          soundManager.playClick();
+          if (this.state.l5.pushProgress >= this.state.l5.targetPushes) {
+            this.state.l5.isWireOff = true;
+            this.playerEquipped.wireOff = true;
+            this.addSparkParticles(this.state.l5.wireX, this.state.l5.wireY, 25, "#00e676");
+            this.completeLevel();
+          }
         }
+      } else {
+        this.state.l5.isPinching = false;
       }
     } else if (this.currentLevel === 6) {
       const dist = Math.hypot(cx - this.state.l6.victimBeltX, cy - this.state.l6.victimBeltY);
-      if (Math.random() < 0.3) {
+      if (!this.state.l6.isUnhooked && Math.random() < 0.3) {
         this.addSparkParticles(this.state.l6.victimBeltX, this.state.l6.victimBeltY, 3, "#ffd600");
       }
-      if (isPinch && dist < 75 && !this.state.l6.isUnhooked) {
-        this.state.l6.isUnhooked = true;
-        this.playerEquipped.victimUnhooked = true;
-        this.addSparkParticles(cx, cy, 20, "#00e676");
-        soundManager.playGrab();
-        this.completeLevel();
+
+      if (isPinch) {
+        if (!this.state.l6.isPinching && dist < 80 && !this.state.l6.isUnhooked) {
+          this.state.l6.isPinching = true;
+          this.state.l6.pullCount++;
+          this.addSparkParticles(cx, cy, 12, "#ffd600");
+          soundManager.playClick();
+          if (this.state.l6.pullCount >= this.state.l6.targetPulls) {
+            this.state.l6.isUnhooked = true;
+            this.playerEquipped.victimUnhooked = true;
+            this.addSparkParticles(cx, cy, 25, "#00e676");
+            soundManager.playGrab();
+            this.completeLevel();
+          }
+        }
+      } else {
+        this.state.l6.isPinching = false;
       }
     } else if (this.currentLevel === 7) {
       const dist = Math.hypot(cx - this.state.l7.victimX, cy - this.state.l7.victimY);
@@ -511,62 +553,79 @@ class LevelManager {
     ctx.fillRect(w * 0.72 - 45, h * 0.65 - 25, 30, 25);
   }
 
-  // Nong Watt-D Avatar
+  // Nong Watt-D Avatar (Scaled up for maximum cuteness & visibility)
   renderNongWattDAvatar(ctx, x, y) {
     ctx.shadowColor = "rgba(0,0,0,0.6)";
-    ctx.shadowBlur = 12;
+    ctx.shadowBlur = 14;
+
+    const scale = 1.35; // ขยายขนาดน้อง Watt-D เพิ่มขึ้นอย่างน่ารัก
 
     ctx.fillStyle = "#741b8a";
     ctx.beginPath();
-    ctx.arc(x, y, 32, 0, Math.PI * 2);
+    ctx.arc(x, y, 32 * scale, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.fillStyle = "#ffffff";
     ctx.beginPath();
-    ctx.ellipse(x, y - 4, 22, 18, 0, 0, Math.PI * 2);
+    ctx.ellipse(x, y - 4 * scale, 22 * scale, 18 * scale, 0, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.fillStyle = "#111";
     ctx.beginPath();
-    ctx.arc(x - 9, y - 6, 4, 0, Math.PI * 2);
-    ctx.arc(x + 9, y - 6, 4, 0, Math.PI * 2);
+    ctx.arc(x - 9 * scale, y - 6 * scale, 4.5 * scale, 0, Math.PI * 2);
+    ctx.arc(x + 9 * scale, y - 6 * scale, 4.5 * scale, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Eye Highlights
+    ctx.fillStyle = "#fff";
+    ctx.beginPath();
+    ctx.arc(x - 10 * scale, y - 8 * scale, 1.8 * scale, 0, Math.PI * 2);
+    ctx.arc(x + 8 * scale, y - 8 * scale, 1.8 * scale, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Blushing Cheeks
+    ctx.fillStyle = "rgba(255, 128, 171, 0.6)";
+    ctx.beginPath();
+    ctx.arc(x - 16 * scale, y + 2 * scale, 5 * scale, 0, Math.PI * 2);
+    ctx.arc(x + 16 * scale, y + 2 * scale, 5 * scale, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.strokeStyle = "#811877";
-    ctx.lineWidth = 2.5;
+    ctx.lineWidth = 2.5 * scale;
     ctx.beginPath();
-    ctx.arc(x, y, 8, 0.1 * Math.PI, 0.9 * Math.PI);
+    ctx.arc(x, y, 8 * scale, 0.1 * Math.PI, 0.9 * Math.PI);
     ctx.stroke();
 
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 11px Kanit";
+    ctx.font = `bold ${Math.round(12 * scale)}px Kanit`;
     ctx.textAlign = "center";
-    ctx.fillText("PEA", x, y + 20);
+    ctx.fillText("PEA", x, y + 22 * scale);
 
-    ctx.fillStyle = "#c7a500";
+    // Lightning ears
+    ctx.fillStyle = "#ffd600";
     ctx.beginPath();
-    ctx.moveTo(x - 22, y - 26); ctx.lineTo(x - 34, y - 46); ctx.lineTo(x - 24, y - 44);
-    ctx.lineTo(x - 30, y - 56); ctx.lineTo(x - 14, y - 34); ctx.lineTo(x - 20, y - 35);
+    ctx.moveTo(x - 22 * scale, y - 26 * scale); ctx.lineTo(x - 36 * scale, y - 48 * scale); ctx.lineTo(x - 24 * scale, y - 46 * scale);
+    ctx.lineTo(x - 32 * scale, y - 58 * scale); ctx.lineTo(x - 14 * scale, y - 34 * scale); ctx.lineTo(x - 20 * scale, y - 35 * scale);
     ctx.closePath(); ctx.fill();
 
     ctx.beginPath();
-    ctx.moveTo(x + 22, y - 26); ctx.lineTo(x + 34, y - 46); ctx.lineTo(x + 24, y - 44);
-    ctx.lineTo(x + 30, y - 56); ctx.lineTo(x + 14, y - 34); ctx.lineTo(x + 20, y - 35);
+    ctx.moveTo(x + 22 * scale, y - 26 * scale); ctx.lineTo(x + 36 * scale, y - 48 * scale); ctx.lineTo(x + 24 * scale, y - 46 * scale);
+    ctx.lineTo(x + 32 * scale, y - 58 * scale); ctx.lineTo(x + 14 * scale, y - 34 * scale); ctx.lineTo(x + 20 * scale, y - 35 * scale);
     ctx.closePath(); ctx.fill();
 
     ctx.fillStyle = this.playerEquipped.gloves ? "#00e676" : "#ff9800";
     ctx.beginPath();
-    ctx.arc(x - 34, y + 10, 11, 0, Math.PI * 2);
-    ctx.arc(x + 34, y + 10, 11, 0, Math.PI * 2);
+    ctx.arc(x - 36 * scale, y + 10 * scale, 12 * scale, 0, Math.PI * 2);
+    ctx.arc(x + 36 * scale, y + 10 * scale, 12 * scale, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.fillStyle = this.playerEquipped.boots ? "#00e676" : "#ff9800";
-    ctx.fillRect(x - 18, y + 28, 14, 16);
-    ctx.fillRect(x + 4, y + 28, 14, 16);
+    ctx.fillRect(x - 20 * scale, y + 28 * scale, 15 * scale, 18 * scale);
+    ctx.fillRect(x + 5 * scale, y + 28 * scale, 15 * scale, 18 * scale);
 
     ctx.fillStyle = "#ffd600";
-    ctx.font = "bold 13px Kanit";
-    ctx.fillText("น้อง Watt-D (PEA)", x, y + 56);
+    ctx.font = `bold ${Math.round(14 * scale)}px Kanit`;
+    ctx.fillText("น้อง Watt-D (PEA)", x, y + 60 * scale);
     ctx.shadowBlur = 0;
   }
 
@@ -860,36 +919,36 @@ class LevelManager {
   }
 
   renderL9(ctx, w, h, handTracker) {
-    this.renderDinoVictimImage(ctx, w * 0.5, h * 0.55, false);
+    this.renderDinoVictimImage(ctx, w * 0.5, h * 0.58, false, 175); // เพิ่มขนาดน้องไดโนเสาร์เป็น 175px
 
-    this.renderVirtualHandOverlay(ctx, w * 0.5, h * 0.55, "ตบไหล่");
+    this.renderVirtualHandOverlay(ctx, w * 0.5, h * 0.58, "ตบไหล่");
     if (this.state.l9.shoulderTaps >= 3) {
-      this.renderVirtualHandOverlay(ctx, w * 0.5, h * 0.42, "เชยคาง");
+      this.renderVirtualHandOverlay(ctx, w * 0.5, h * 0.44, "เชยคาง");
     }
 
     ctx.fillStyle = "#333333";
     ctx.font = "bold 18px Kanit";
     ctx.textAlign = "center";
-    ctx.fillText(`ตบไหล่เรียกผู้ป่วย: ${this.state.l9.shoulderTaps} / 3`, w * 0.5, h * 0.30);
-    ctx.fillText(this.state.l9.chinTilted ? "✓ เชยคางเปิดทางเดินหายใจแล้ว" : "แตะคางเพื่อเชยเปิดทางเดินหายใจ", w * 0.5, h * 0.35);
+    ctx.fillText(`ตบไหล่เรียกผู้ป่วย: ${this.state.l9.shoulderTaps} / 3`, w * 0.5, h * 0.28);
+    ctx.fillText(this.state.l9.chinTilted ? "✓ เชยคางเปิดทางเดินหายใจแล้ว" : "แตะคางเพื่อเชยเปิดทางเดินหายใจ", w * 0.5, h * 0.33);
   }
 
   renderL10(ctx, w, h, handTracker) {
     const s = this.state.l10;
-    this.renderDinoVictimImage(ctx, w * 0.5, h * 0.6, false);
+    this.renderDinoVictimImage(ctx, w * 0.5, h * 0.62, false, 175); // เพิ่มขนาดน้องไดโนเสาร์เป็น 175px
 
-    const beatRadius = s.isCPRBeatActive ? 52 : 34;
+    const beatRadius = s.isCPRBeatActive ? 56 : 38;
     ctx.fillStyle = "rgba(255, 61, 0, 0.45)";
     ctx.beginPath();
-    ctx.arc(w * 0.5, h * 0.58, beatRadius, 0, Math.PI * 2);
+    ctx.arc(w * 0.5, h * 0.60, beatRadius, 0, Math.PI * 2);
     ctx.fill();
 
-    this.renderCPRInterlockedHands(ctx, w * 0.5, h * 0.58);
+    this.renderCPRInterlockedHands(ctx, w * 0.5, h * 0.60);
 
     ctx.fillStyle = "#333333";
     ctx.font = "bold 22px Kanit";
     ctx.textAlign = "center";
-    ctx.fillText(`ปั๊มหัวใจ (CPR): ${s.cprCount} / ${s.targetCPR}`, w * 0.5, h * 0.33);
+    ctx.fillText(`ปั๊มหัวใจ (CPR): ${s.cprCount} / ${s.targetCPR}`, w * 0.5, h * 0.28);
   }
 
   renderVirtualHandOverlay(ctx, x, y, label) {
@@ -922,14 +981,14 @@ class LevelManager {
   }
 
   // Render Cutout Transparent Dino Victim Character ('victim_transparent.png')
-  renderDinoVictimImage(ctx, x, y, isSparksActive) {
-    const size = 120;
+  renderDinoVictimImage(ctx, x, y, isSparksActive, customSize = 130) {
+    const size = customSize;
     if (this.victimImage.complete && this.victimImage.naturalWidth !== 0) {
       ctx.drawImage(this.victimImage, x - size / 2, y - size / 2 - 10, size, size);
     } else {
       ctx.fillStyle = "#4caf50";
       ctx.beginPath();
-      ctx.arc(x, y - 20, 35, 0, Math.PI * 2);
+      ctx.arc(x, y - 20, size * 0.3, 0, Math.PI * 2);
       ctx.fill();
     }
 
@@ -937,8 +996,8 @@ class LevelManager {
       ctx.strokeStyle = "#ffd600";
       ctx.lineWidth = 3.5;
       ctx.beginPath();
-      ctx.moveTo(x - 45, y - 45); ctx.lineTo(x + 45, y + 45);
-      ctx.moveTo(x + 45, y - 45); ctx.lineTo(x - 45, y + 45);
+      ctx.moveTo(x - size * 0.38, y - size * 0.38); ctx.lineTo(x + size * 0.38, y + size * 0.38);
+      ctx.moveTo(x + size * 0.38, y - size * 0.38); ctx.lineTo(x - size * 0.38, y + size * 0.38);
       ctx.stroke();
     }
   }
