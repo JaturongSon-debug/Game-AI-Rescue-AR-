@@ -253,11 +253,11 @@ class LevelManager {
       const dist = Math.hypot(cx - this.state.l2.plugX, cy - this.state.l2.plugY);
       if (Math.random() < 0.25) this.addSparkParticles(this.state.l2.socketX, this.state.l2.socketY, 2, "#ffd600");
 
-      if (isPinch && dist < 65) {
+      if (isPinch && dist < 75) {
         this.state.l2.plugX = cx;
         this.state.l2.plugY = cy;
         const pullDist = Math.hypot(this.state.l2.plugX - this.state.l2.socketX, this.state.l2.plugY - this.state.l2.socketY);
-        if (pullDist > 120 && this.state.l2.isPlugged) {
+        if (pullDist > 220 && this.state.l2.isPlugged) { // เพิ่มระยะการดึงปลั๊กไฟออกจาก 120px เป็น 220px
           this.state.l2.isPlugged = false;
           this.addSparkParticles(this.state.l2.plugX, this.state.l2.plugY, 20, "#ff5252");
           soundManager.playUnplug();
@@ -304,11 +304,11 @@ class LevelManager {
       }
 
       if (isPinch) {
-        if (!this.state.l5.isPinching && dist < 85 && !this.state.l5.isWireOff) {
+        if (!this.state.l5.isPinching && dist < 95 && !this.state.l5.isWireOff) {
           this.state.l5.isPinching = true;
           this.state.l5.pushProgress++;
           this.addSparkParticles(this.state.l5.wireX, this.state.l5.wireY, 12, "#ffd600");
-          this.state.l5.wireX -= 35;
+          this.state.l5.wireX -= 70; // เพิ่มระยะการดันไม้ผลักสายไฟออกจาก 35px เป็น 70px ต่อครั้ง
           soundManager.playClick();
           if (this.state.l5.pushProgress >= this.state.l5.targetPushes) {
             this.state.l5.isWireOff = true;
@@ -327,10 +327,11 @@ class LevelManager {
       }
 
       if (isPinch) {
-        if (!this.state.l6.isPinching && dist < 80 && !this.state.l6.isUnhooked) {
+        if (!this.state.l6.isPinching && dist < 90 && !this.state.l6.isUnhooked) {
           this.state.l6.isPinching = true;
           this.state.l6.pullCount++;
           this.addSparkParticles(cx, cy, 12, "#ffd600");
+          this.state.l6.victimBeltX -= 50; // เพิ่มระยะทางในการเกี่ยวไม้ดึงผู้ป่วยออกจากโครงเก้าอี้เหล็กไฟรั่ว 50px ต่อครั้ง
           soundManager.playClick();
           if (this.state.l6.pullCount >= this.state.l6.targetPulls) {
             this.state.l6.isUnhooked = true;
